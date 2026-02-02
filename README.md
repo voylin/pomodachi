@@ -5,6 +5,7 @@ Pomodachi is in alpha right now, it'll get more features as time goes on, there'
 ## Road-map
 - [ ] Simple timer functionality;
 - [ ] Create icon;
+- [ ] Add AUR install;
 - [ ] Have preset times (change-able);
 - [ ] Tracking of what you've been working on (activities);
 - [ ] Graphs to show tracked progress (by day/month/year);
@@ -17,4 +18,4 @@ Pomodachi is in alpha right now, it'll get more features as time goes on, there'
 - [ ] MacOS build;
 - [ ] Tracking progress export (CSV/JSON);
 - [ ] Tracking progress syncing;
-
+- [ ] Itch.io page;
