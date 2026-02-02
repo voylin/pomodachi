@@ -1,0 +1,268 @@
+[gd_scene format=3 uid="uid://dmml0yknptb20"]
+
+[ext_resource type="Texture2D" uid="uid://cfaouyid3cel" path="res://icons/close.svg" id="1_0xm2m"]
+[ext_resource type="Script" uid="uid://cy4jddl3l0yc5" path="res://main.gd" id="1_lquwl"]
+[ext_resource type="Texture2D" uid="uid://3f5sgvl1355e" path="res://icons/settings.svg" id="2_h2yge"]
+[ext_resource type="Texture2D" uid="uid://bl333up7qn2ns" path="res://icons/up.svg" id="3_h2yge"]
+[ext_resource type="Texture2D" uid="uid://78joo6bm26k2" path="res://icons/down.svg" id="4_1bvp3"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0xm2m"]
+content_margin_left = 3.0
+content_margin_top = 2.0
+content_margin_right = 3.0
+content_margin_bottom = 2.0
+bg_color = Color(0.101960786, 0.101960786, 0.101960786, 0.74509805)
+border_width_top = 50
+border_color = Color(0.13725491, 0.06666667, 0.20392157, 1)
+border_blend = true
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+corner_detail = 20
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_lquwl"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_0xm2m"]
+font_size = 45
+
+[sub_resource type="LabelSettings" id="LabelSettings_1bvp3"]
+font_size = 30
+outline_size = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1bvp3"]
+content_margin_top = 3.0
+content_margin_bottom = 3.0
+bg_color = Color(0.35686275, 0.35686275, 0.35686275, 0.6666667)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7mycd"]
+content_margin_left = 5.0
+content_margin_right = 5.0
+bg_color = Color(0.65524167, 0.8474158, 0.8856175, 0.6)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+corner_detail = 5
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_272bh"]
+size = Vector2(0, 0)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_lquwl"]
+content_margin_top = 2.0
+content_margin_bottom = 2.0
+bg_color = Color(0.09910252, 0.7607047, 0.09832641, 0.6)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+corner_detail = 5
+
+[node name="Main" type="PanelContainer" unique_id=1827930899 node_paths=PackedStringArray("settings_menu_button", "activity_label", "minute_label", "second_label", "extras_to_hide", "stop_button", "preset_hbox", "bottom_hbox", "activity_option_button", "audio_player")]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_0xm2m")
+script = ExtResource("1_lquwl")
+settings_menu_button = NodePath("VBox/TopHBox/SettingsButton")
+activity_label = NodePath("VBox/TopHBox/ActivityLabel")
+minute_label = NodePath("VBox/TimerGrid/MinuteLabel")
+second_label = NodePath("VBox/TimerGrid/SecondLabel")
+extras_to_hide = [NodePath("VBox/TimerGrid/MinuteUpButton"), NodePath("VBox/TimerGrid/Spacer1"), NodePath("VBox/TimerGrid/SecondUpButton"), NodePath("VBox/TimerGrid/MinuteDownButton"), NodePath("VBox/TimerGrid/Spacer2"), NodePath("VBox/TimerGrid/SecondDownButton")]
+stop_button = NodePath("VBox/EndButton")
+preset_hbox = NodePath("VBox/PresetsHBox")
+bottom_hbox = NodePath("VBox/BottomHBox")
+activity_option_button = NodePath("VBox/BottomHBox/ActivityOptionButton")
+audio_player = NodePath("AudioStreamPlayer")
+
+[node name="VBox" type="VBoxContainer" parent="." unique_id=1737573601]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="TopHBox" type="HBoxContainer" parent="VBox" unique_id=1080574089]
+modulate = Color(1, 1, 1, 0.7058824)
+layout_mode = 2
+
+[node name="SettingsButton" type="MenuButton" parent="VBox/TopHBox" unique_id=1982999454]
+custom_minimum_size = Vector2(18, 0)
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxEmpty_lquwl")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_lquwl")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_lquwl")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_lquwl")
+icon = ExtResource("2_h2yge")
+icon_alignment = 1
+expand_icon = true
+
+[node name="ActivityLabel" type="Label" parent="VBox/TopHBox" unique_id=876216070]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 1
+text = "Pomodachi"
+horizontal_alignment = 1
+
+[node name="CloseButton" type="TextureButton" parent="VBox/TopHBox" unique_id=174830190]
+custom_minimum_size = Vector2(18, 0)
+layout_mode = 2
+texture_normal = ExtResource("1_0xm2m")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="TimerGrid" type="GridContainer" parent="VBox" unique_id=1937862297]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/v_separation = -10
+columns = 3
+
+[node name="MinuteUpButton" type="TextureButton" parent="VBox/TimerGrid" unique_id=188174788]
+modulate = Color(1, 1, 1, 0.39215687)
+custom_minimum_size = Vector2(0, 12)
+layout_mode = 2
+texture_normal = ExtResource("3_h2yge")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="Spacer1" type="Control" parent="VBox/TimerGrid" unique_id=294209741]
+custom_minimum_size = Vector2(8, 0)
+layout_mode = 2
+
+[node name="SecondUpButton" type="TextureButton" parent="VBox/TimerGrid" unique_id=1761822369]
+modulate = Color(1, 1, 1, 0.39215687)
+custom_minimum_size = Vector2(0, 12)
+layout_mode = 2
+texture_normal = ExtResource("3_h2yge")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="MinuteLabel" type="Label" parent="VBox/TimerGrid" unique_id=2013197932]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+mouse_filter = 1
+text = "25"
+label_settings = SubResource("LabelSettings_0xm2m")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="MiddleLabel" type="Label" parent="VBox/TimerGrid" unique_id=1580169944]
+layout_mode = 2
+size_flags_vertical = 3
+text = ":"
+label_settings = SubResource("LabelSettings_1bvp3")
+vertical_alignment = 1
+
+[node name="SecondLabel" type="Label" parent="VBox/TimerGrid" unique_id=80485582]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+mouse_filter = 1
+text = "00"
+label_settings = SubResource("LabelSettings_0xm2m")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="MinuteDownButton" type="TextureButton" parent="VBox/TimerGrid" unique_id=1105857305]
+modulate = Color(1, 1, 1, 0.39215687)
+custom_minimum_size = Vector2(0, 12)
+layout_mode = 2
+texture_normal = ExtResource("4_1bvp3")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="Spacer2" type="Control" parent="VBox/TimerGrid" unique_id=1893315525]
+custom_minimum_size = Vector2(8, 0)
+layout_mode = 2
+
+[node name="SecondDownButton" type="TextureButton" parent="VBox/TimerGrid" unique_id=679580219]
+modulate = Color(1, 1, 1, 0.39215687)
+custom_minimum_size = Vector2(0, 12)
+layout_mode = 2
+texture_normal = ExtResource("4_1bvp3")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="PresetsHBox" type="HBoxContainer" parent="VBox" unique_id=532056016]
+layout_mode = 2
+
+[node name="PresetButton0" type="Button" parent="VBox/PresetsHBox" unique_id=1789081375]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 13
+theme_override_styles/normal = SubResource("StyleBoxFlat_1bvp3")
+text = "10:00"
+
+[node name="PresetButton1" type="Button" parent="VBox/PresetsHBox" unique_id=1194123394]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 13
+theme_override_styles/normal = SubResource("StyleBoxFlat_1bvp3")
+text = "25:00"
+
+[node name="PresetButton2" type="Button" parent="VBox/PresetsHBox" unique_id=1337507380]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 13
+theme_override_styles/normal = SubResource("StyleBoxFlat_1bvp3")
+text = "50:00"
+
+[node name="BottomHBox" type="HBoxContainer" parent="VBox" unique_id=961648003]
+custom_minimum_size = Vector2(0, 24)
+layout_mode = 2
+
+[node name="ActivityOptionButton" type="OptionButton" parent="VBox/BottomHBox" unique_id=1224423446]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 13
+theme_override_styles/normal = SubResource("StyleBoxFlat_7mycd")
+theme_override_icons/arrow = SubResource("PlaceholderTexture2D_272bh")
+alignment = 1
+text_overrun_behavior = 5
+autowrap_trim_flags = 192
+clip_text = true
+selected = 0
+item_count = 2
+popup/item_0/text = "Work"
+popup/item_0/id = 0
+popup/item_1/text = "Study"
+popup/item_1/id = 1
+
+[node name="StartButton" type="Button" parent="VBox/BottomHBox" unique_id=122993631]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 14
+theme_override_styles/normal = SubResource("StyleBoxFlat_lquwl")
+text = "Start"
+
+[node name="EndButton" type="Button" parent="VBox" unique_id=2064390462]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 8
+theme_override_font_sizes/font_size = 14
+text = "Stop timer"
+flat = true
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="." unique_id=581119108]
+
+[connection signal="gui_input" from="VBox/TopHBox/ActivityLabel" to="." method="_on_activity_label_gui_input"]
+[connection signal="pressed" from="VBox/TopHBox/CloseButton" to="." method="_on_close_button_pressed"]
+[connection signal="pressed" from="VBox/TimerGrid/MinuteUpButton" to="." method="_on_time_change_button_pressed" binds= [true, true]]
+[connection signal="pressed" from="VBox/TimerGrid/SecondUpButton" to="." method="_on_time_change_button_pressed" binds= [false, true]]
+[connection signal="gui_input" from="VBox/TimerGrid/MinuteLabel" to="." method="_on_minute_label_gui_input"]
+[connection signal="gui_input" from="VBox/TimerGrid/SecondLabel" to="." method="_on_second_label_gui_input"]
+[connection signal="pressed" from="VBox/TimerGrid/MinuteDownButton" to="." method="_on_time_change_button_pressed" binds= [true, false]]
+[connection signal="pressed" from="VBox/TimerGrid/SecondDownButton" to="." method="_on_time_change_button_pressed" binds= [false, false]]
+[connection signal="pressed" from="VBox/PresetsHBox/PresetButton0" to="." method="_on_preset_button_pressed" binds= [0]]
+[connection signal="pressed" from="VBox/PresetsHBox/PresetButton1" to="." method="_on_preset_button_pressed" binds= [1]]
+[connection signal="pressed" from="VBox/PresetsHBox/PresetButton2" to="." method="_on_preset_button_pressed" binds= [2]]
+[connection signal="pressed" from="VBox/BottomHBox/StartButton" to="." method="_on_start_button_pressed"]
+[connection signal="pressed" from="VBox/EndButton" to="." method="_on_end_button_pressed"]
