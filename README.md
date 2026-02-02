@@ -19,3 +19,6 @@ Pomodachi is in alpha right now, it'll get more features as time goes on, there'
 - [ ] Tracking progress export (CSV/JSON);
 - [ ] Tracking progress syncing;
 - [ ] Itch.io page;
+
+## Pomodoro?
+The Pomodoro Technique is a time-management method using a timer to break work into 25-minute, high-focus intervals called "pomodoros," separated by 5-minute short breaks.
