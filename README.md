@@ -1,6 +1,8 @@
 # Pomodachi - ALPHA
 _A pomodoro timer made with Godot._
+
 ![Pomodachi icon](src/icon.svg)
+
 Pomodachi is in alpha right now, it'll get more features as time goes on, there's a roadmap, but for the first few stages I want to focus on usability first.
 
 ## Road-map
