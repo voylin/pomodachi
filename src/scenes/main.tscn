@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://dmml0yknptb20"]
 
 [ext_resource type="Texture2D" uid="uid://cfaouyid3cel" path="res://icons/close.svg" id="1_0xm2m"]
-[ext_resource type="Script" uid="uid://cy4jddl3l0yc5" path="res://main.gd" id="1_lquwl"]
+[ext_resource type="Script" uid="uid://cy4jddl3l0yc5" path="res://scenes/main.gd" id="1_lquwl"]
 [ext_resource type="Texture2D" uid="uid://3f5sgvl1355e" path="res://icons/settings.svg" id="2_h2yge"]
 [ext_resource type="Texture2D" uid="uid://bl333up7qn2ns" path="res://icons/up.svg" id="3_h2yge"]
 [ext_resource type="Texture2D" uid="uid://78joo6bm26k2" path="res://icons/down.svg" id="4_1bvp3"]
@@ -99,6 +99,11 @@ theme_override_styles/focus = SubResource("StyleBoxEmpty_lquwl")
 icon = ExtResource("2_h2yge")
 icon_alignment = 1
 expand_icon = true
+item_count = 2
+popup/item_0/text = "Change presets"
+popup/item_0/id = 0
+popup/item_1/text = "Manage activities"
+popup/item_1/id = 1
 
 [node name="ActivityLabel" type="Label" parent="VBox/TopHBox" unique_id=876216070]
 layout_mode = 2

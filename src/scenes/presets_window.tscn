@@ -1,0 +1,108 @@
+[gd_scene format=3 uid="uid://doxsdtbqopd5s"]
+
+[ext_resource type="StyleBox" uid="uid://cg70fcbxvp3d4" path="res://resources/popup_background.tres" id="1_pnajg"]
+[ext_resource type="Script" uid="uid://bnyssho7xqgnq" path="res://scenes/popup_handling.gd" id="2_in6qe"]
+[ext_resource type="Texture2D" uid="uid://cfaouyid3cel" path="res://icons/close.svg" id="3_d1ums"]
+
+[node name="PresetsWindow" type="Window" unique_id=68327100 node_paths=PackedStringArray("label_title", "spinbox_preset_0", "spinbox_preset_1", "spinbox_preset_2")]
+transparent_bg = true
+oversampling_override = 1.0
+size = Vector2i(306, 100)
+wrap_controls = true
+exclusive = true
+unresizable = true
+borderless = true
+always_on_top = true
+transparent = true
+popup_window = true
+min_size = Vector2i(300, 100)
+script = ExtResource("2_in6qe")
+label_title = NodePath("PanelContainer/VBox/TitleLabel")
+spinbox_preset_0 = NodePath("PanelContainer/VBox/MarginContainer/PresetSettersHBox/PresetSpinBox0")
+spinbox_preset_1 = NodePath("PanelContainer/VBox/MarginContainer/PresetSettersHBox/PresetSpinBox1")
+spinbox_preset_2 = NodePath("PanelContainer/VBox/MarginContainer/PresetSettersHBox/PresetSpinBox2")
+
+[node name="PanelContainer" type="PanelContainer" parent="." unique_id=1709182621]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = ExtResource("1_pnajg")
+
+[node name="VBox" type="VBoxContainer" parent="PanelContainer" unique_id=734091412]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+
+[node name="TitleLabel" type="Label" parent="PanelContainer/VBox" unique_id=148774850]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 1
+text = "Title"
+horizontal_alignment = 1
+
+[node name="CloseButton" type="TextureButton" parent="PanelContainer/VBox/TitleLabel" unique_id=231748851]
+custom_minimum_size = Vector2(18, 20)
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -18.0
+grow_horizontal = 0
+grow_vertical = 2
+texture_normal = ExtResource("3_d1ums")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="MarginContainer" type="MarginContainer" parent="PanelContainer/VBox" unique_id=34636878]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_right = 8
+
+[node name="PresetSettersHBox" type="HBoxContainer" parent="PanelContainer/VBox/MarginContainer" unique_id=2143870747]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="PresetSpinBox0" type="SpinBox" parent="PanelContainer/VBox/MarginContainer/PresetSettersHBox" unique_id=1021910122]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+focus_mode = 2
+min_value = 1.0
+max_value = 99.0
+value = 1.0
+alignment = 1
+custom_arrow_step = 5.0
+
+[node name="PresetSpinBox1" type="SpinBox" parent="PanelContainer/VBox/MarginContainer/PresetSettersHBox" unique_id=1258759205]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+focus_mode = 2
+min_value = 1.0
+max_value = 99.0
+value = 1.0
+alignment = 1
+custom_arrow_step = 5.0
+
+[node name="PresetSpinBox2" type="SpinBox" parent="PanelContainer/VBox/MarginContainer/PresetSettersHBox" unique_id=978560989]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+focus_mode = 2
+min_value = 1.0
+max_value = 99.0
+value = 1.0
+alignment = 1
+custom_arrow_step = 5.0
+
+[connection signal="pressed" from="PanelContainer/VBox/TitleLabel/CloseButton" to="." method="_on_close_button_pressed"]
+[connection signal="mouse_entered" from="PanelContainer/VBox/MarginContainer/PresetSettersHBox/PresetSpinBox0" to="." method="_grab_focus" flags=18]
+[connection signal="value_changed" from="PanelContainer/VBox/MarginContainer/PresetSettersHBox/PresetSpinBox0" to="." method="_on_preset_spin_box_value_changed" binds= [0]]
+[connection signal="mouse_entered" from="PanelContainer/VBox/MarginContainer/PresetSettersHBox/PresetSpinBox1" to="." method="_grab_focus" flags=18]
+[connection signal="value_changed" from="PanelContainer/VBox/MarginContainer/PresetSettersHBox/PresetSpinBox1" to="." method="_on_preset_spin_box_value_changed" binds= [1]]
+[connection signal="mouse_entered" from="PanelContainer/VBox/MarginContainer/PresetSettersHBox/PresetSpinBox2" to="." method="_grab_focus" flags=18]
+[connection signal="value_changed" from="PanelContainer/VBox/MarginContainer/PresetSettersHBox/PresetSpinBox2" to="." method="_on_preset_spin_box_value_changed" binds= [2]]

@@ -9,9 +9,9 @@ Pomodachi is in alpha right now, it'll get more features as time goes on, there'
 - [x] Simple timer functionality;
 - [x] Create icon;
 - [ ] Add AUR install;
-- [ ] Have preset times (change-able);
+- [x] Have preset times (change-able);
 - [x] Saving settings;
-- [ ] Tracking of what you've been working on (activities);
+- [x] Tracking of what you've been working on (activities);
 - [ ] Graphs to show tracked progress (by day/month/year);
 - [ ] Add different alarm sounds;
 - [ ] Add activity setting to change alarm sounds;

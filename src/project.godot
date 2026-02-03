@@ -42,6 +42,7 @@ window/size/always_on_top=true
 window/size/transparent=true
 window/size/minimize_disabled=true
 window/size/maximize_disabled=true
+window/subwindows/embed_subwindows=false
 window/per_pixel_transparency/allowed=true
 
 [memory]
