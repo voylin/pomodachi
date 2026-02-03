@@ -1,10 +1,13 @@
 extends PanelContainer
 
 const APP_NAME: String = "Pomodachi"
-const SOUND_FOLDER: String = "res://sounds/"
+const PATH_SETTINGS: String = "user://settings"
+const PATH_SOUNDS: String = "res://sounds/"
 
 const WINDOW_SIZE_DEFAULT: Vector2i = Vector2i(220, 160)
 const WINDOW_SIZE_RUNNING: Vector2i = Vector2i(220, 120)
+
+const SETTINGS: PackedStringArray =  ["chosen_alarm", "activities"]
 
 
 @export var settings_menu_button: MenuButton
@@ -27,7 +30,9 @@ var seconds: int = 0
 var start_minutes: int = 0
 var start_seconds: int = 0
 
+var chosen_alarm: String
 var alarms: PackedStringArray = []
+var activities: PackedStringArray = []
 
 var dragging: bool = false
 var drag_offset: Vector2i
@@ -41,15 +46,8 @@ func _ready() -> void:
 	_set_mode_default()
 	update_minutes()
 	update_seconds()
-	# TODO: Load activities from settings
-
-	# Loading alarms
-	for sound_file_path: String in DirAccess.get_files_at("res://sounds/"):
-		if !sound_file_path.ends_with(".import"):
-			_err = alarms.append(SOUND_FOLDER + sound_file_path)
-
-	alarms.sort()
-	audio_player.stream = load(alarms[0]) # TODO: Save/load this setting
+	load_settings()
+	load_alarms()
 
 
 func _process(delta: float) -> void:
@@ -62,19 +60,53 @@ func _process(delta: float) -> void:
 	if elapsed_time >= 1.0: # Second passed
 		elapsed_time -= 1.0
 		update_seconds(seconds - 1)
+		if minutes + seconds == 0: sound_alarm()
 
-		if minutes + seconds == 0:
-			running = false
-			audio_player.play()
 
-			minutes = start_minutes
-			seconds = start_seconds
-			stop_button.modulate.a = 1.0
+# -- Settings ---
 
+func save_settings() -> void:
+	var file: FileAccess = FileAccess.open(PATH_SETTINGS, FileAccess.WRITE)
+	var data: Dictionary = {}
+
+	for key: String in SETTINGS: data[key] = get(key)
+	_err = file.store_var(data)
+
+
+func load_settings() -> void:
+	if !FileAccess.file_exists(PATH_SETTINGS): return save_settings()
+	var file: FileAccess = FileAccess.open(PATH_SETTINGS, FileAccess.READ)
+	var data: Dictionary = file.get_var()
+
+	for key: String in data.keys(): set(key, data[key])
+
+
+# --- Alarm handling ---
+
+func load_alarms() -> void:
+	for sound_file_path: String in DirAccess.get_files_at("res://sounds/"):
+		if !sound_file_path.ends_with(".import"):
+			_err = alarms.append(PATH_SOUNDS + sound_file_path)
+
+	alarms.sort()
+	if chosen_alarm.is_empty():
+		audio_player.stream = load(alarms[0])
+	else:
+		audio_player.stream = load(chosen_alarm)
+
+
+func sound_alarm() -> void:
+	audio_player.play()
+
+	running = false
+	minutes = start_minutes
+	seconds = start_seconds
+	stop_button.modulate.a = 1.0
 
 # --- Buttons ---
 
 func _on_start_button_pressed() -> void:
+	running = true
 	elapsed_time = 0
 	start_minutes = minutes
 	start_seconds = seconds
@@ -85,6 +117,8 @@ func _on_end_button_pressed() -> void:
 	# TODO: Save activity progress (take start time if timer went off,
 	#		else take start time and do minus remaining time)
 
+	running = false
+	audio_player.stop()
 	_set_mode_default()
 
 
@@ -154,7 +188,7 @@ func update_seconds(new_value: int = seconds) -> void:
 	elif new_value < 0 and minutes > 0:
 		update_minutes(minutes - 1)
 		new_value = 59
-	elif new_value == 0 and minutes == 0:
+	elif new_value == 0 and minutes == 0 and !running:
 		new_value = 1
 
 	seconds = clampi(new_value, 0, 59)
