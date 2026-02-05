@@ -58,4 +58,5 @@ limits/message_queue/max_size_mb=16
 rendering_device/driver.windows="d3d12"
 renderer/rendering_method="gl_compatibility"
 renderer/rendering_method.mobile="gl_compatibility"
+textures/vram_compression/import_etc2_astc=true
 viewport/transparent_background=true
