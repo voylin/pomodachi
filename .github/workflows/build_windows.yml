@@ -1,5 +1,4 @@
 name: Release build Windows
-run-name: Building Windows release version
 on:
   workflow_dispatch:
     inputs:
