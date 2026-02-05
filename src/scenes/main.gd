@@ -9,6 +9,8 @@ const WINDOW_SIZE_DEFAULT: Vector2i = Vector2i(220, 160)
 const WINDOW_SIZE_RUNNING: Vector2i = Vector2i(220, 120)
 
 const SETTINGS: PackedStringArray =  ["chosen_alarm", "activities", "presets"]
+const PROGRESS_SAVE: PackedStringArray =  [
+		"progress_date", "progress_time_spent", "progress_activity"]
 
 
 @export var settings_menu_button: MenuButton
@@ -37,8 +39,11 @@ var chosen_activity: String
 
 var alarms: PackedStringArray = []
 var presets: PackedInt32Array = [10, 25, 50]
-var activities: PackedStringArray = []
-var progress: Dictionary[String, int] = {} # { date_time: time_spent }
+var activities: PackedStringArray = ["Work", "Study"]
+
+var progress_date: PackedStringArray = []
+var progress_time_spent: PackedInt32Array = []
+var progress_activity: PackedStringArray = []
 
 var dragged_window: Window
 var dragging: bool = false
@@ -55,6 +60,7 @@ func _ready() -> void:
 	load_settings()
 	load_alarms()
 	load_presets()
+	load_activities()
 	load_progress()
 	_on_preset_button_pressed(1) # Middle preset is startup default
 	_set_mode_default()
@@ -104,24 +110,74 @@ func _on_setting_pressed(id: int) -> void:
 	match id:
 		0: open_preset_window() # Change presets
 		1: open_activities_window() # Manage activies
+		2: open_export_tracking_data() # Export tracking data
 
 
 # --- Progress tracking ---
 
 func save_progress() -> void:
 	var file: FileAccess = FileAccess.open(PATH_PROGRESS, FileAccess.WRITE)
-	_err = file.store_var(progress)
+	var data: Dictionary = {}
+
+	for array_name: String in PROGRESS_SAVE:
+		data[array_name] = get(array_name)
+	_err = file.store_var(data)
 
 
 func load_progress() -> void:
 	if !FileAccess.file_exists(PATH_PROGRESS): return
 	var file: FileAccess = FileAccess.open(PATH_PROGRESS, FileAccess.READ)
-	progress = file.get_var()
+	var data: Dictionary = file.get_var()
+
+	for array_name: String in data.keys():
+		set(array_name, data[array_name])
 
 
 func add_progress() -> void:
-	progress[Time.get_datetime_string_from_system()] = run_time
+	_err = progress_date.append(Time.get_datetime_string_from_system())
+	_err = progress_time_spent.append(run_time)
+	_err = progress_activity.append(chosen_activity)
+
 	save_progress()
+
+
+func open_export_tracking_data() -> void:
+	# TODO: Open the file explorer to save the tracking progress data.
+	# If saved by json, save json data, if saved by csv, make csv table file.
+	var dialog: FileDialog = FileDialog.new()
+	add_child(dialog)
+
+	dialog.file_mode = FileDialog.FILE_MODE_SAVE_FILE
+	dialog.filters = ["*.json","*.csv"]
+	dialog.title = "Save activity tracking progress"
+	_err = dialog.file_selected.connect(_on_save_export_tracking_data)
+	dialog.popup_centered()
+
+
+func _on_save_export_tracking_data(path: String) -> void:
+	var data: Array[Dictionary] = []
+
+	for i: int in progress_time_spent.size():
+		var progress_entry: Dictionary = {}
+
+		for array_name: String in PROGRESS_SAVE:
+			progress_entry[array_name] = get(array_name)[i]
+		data.append(progress_entry)
+
+	if data.size() == 0: return
+	elif path.to_lower().ends_with(".json"):
+		var file: FileAccess = FileAccess.open(path, FileAccess.WRITE)
+		_err = file.store_string(JSON.stringify(data))
+	else:
+		var file: FileAccess = FileAccess.open(path, FileAccess.WRITE)
+		_err = file.store_line(",".join(PROGRESS_SAVE))
+
+		for entry: Dictionary in data:
+			var entries: Array = []
+
+			for array_name: String in PROGRESS_SAVE:
+				entries.append(entry[array_name])
+			_err = file.store_line(",".join(entries))
 
 
 # --- Buttons ---
@@ -132,7 +188,12 @@ func _on_start_button_pressed() -> void:
 	run_time = 0
 	start_minutes = minutes
 	start_seconds = seconds
-	chosen_activity = activities[activity_option_button.get_selected_id()]
+
+	var activity_id: int = activity_option_button.get_selected_id()
+	if activities.size() < activity_id or activity_id == -1:
+		chosen_activity = "Empty"
+	else:
+		chosen_activity = activities[activity_id]
 	_set_mode_running()
 
 
@@ -274,6 +335,21 @@ func load_presets() -> void:
 
 # -- Activites handling ---
 
+func load_activities() -> void:
+	activity_option_button.clear()
+
+	if activities.size() == 0:
+		activity_option_button.visible = false
+		activity_option_button.selected = -1
+		return
+
+	for activity: String in activities:
+		activity_option_button.add_item(activity)
+	activity_option_button.visible = true
+	activity_option_button.selected = clampi(
+			activity_option_button.get_selected_id(), 0, activities.size())
+
+
 func open_activities_window() -> void:
 	var popup: PopupWindow = (load("uid://drbb04j5raw3u") as PackedScene).instantiate()
 	add_child(popup)
@@ -295,8 +371,8 @@ func _set_mode_default() -> void:
 	activity_label.text = APP_NAME
 
 	# Reset time
-	minutes = start_minutes
-	seconds = start_seconds
+	update_minutes(start_minutes)
+	update_seconds(start_seconds)
 
 	stop_button.visible = false
 	stop_button.modulate.a = 1.0
@@ -313,7 +389,11 @@ func _set_mode_default() -> void:
 
 func _set_mode_running() -> void:
 	var activity_id: int = activity_option_button.get_selected_id()
-	var new_title: String = activity_option_button.get_item_text(activity_id)
+	var new_title: String
+	if activities.size() != 0:
+		new_title = activity_option_button.get_item_text(activity_id)
+	else:
+		new_title = APP_NAME
 
 	get_window().size = WINDOW_SIZE_RUNNING
 	get_window().title = new_title

@@ -64,7 +64,7 @@ jobs:
           cp godot/bin/godot.linuxbsd.template_release.x86_64 ~/.local/share/godot/export_templates/${{ env.GODOT_VERSION }}.stable/linux_release.x86_64
 
       - name: Update version in config
-          sed -i 's/config\/version="[^"]*"/config\/version="${{ env.DATE }}-release"/' ${{ env.GODOT_PROJECT_LOCATION }}
+        run: sed -i 's/config\/version="[^"]*"/config\/version="${{ env.DATE }}-release"/' ${{ env.GODOT_PROJECT_LOCATION }}
 
       - name: Import resources
         run: |
