@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Pomodachi
+Comment=A pomodoro timer and activity tracker made with Godot.
+Exec=pomodachi
+Icon=pomodachi
+Terminal=false
+Categories=Utility;TimeUtility;
