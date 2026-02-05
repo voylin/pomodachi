@@ -50,7 +50,7 @@ jobs:
       - name: Compile Godot template
         run: |
           cd godot
-          scons platform=windows target=template_release arch=x86_64 production=yes build_profile=build_profile.gdbuild -j${{ env.NUM_CORES }}
+          scons platform=windows target=template_release arch=x86_64 production=yes build_profile=../build_profile.gdbuild -j${{ env.NUM_CORES }}
 
       - name: Prepare Godot editor
         run: |
