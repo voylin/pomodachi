@@ -25,9 +25,18 @@ jobs:
           echo "MAIN_FOLDER=$(pwd)" >> $env:GITHUB_ENV
           echo "NUM_CORES=$env:NUMBER_OF_PROCESSORS" >> $env:GITHUB_ENV
 
-      - name: Installing dependencies
-        run: |
-          choco install python scons -y
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Install SCons
+        run: pip install scons
+
+      - name: Install Windows compilation tools
+        # Godot requires specific Visual Studio tools.
+        # 'windows-latest' has VS installed, but we set up the environment variables here.
+        uses: ilammy/msvc-dev-cmd@v1
 
       - name: Checkout submodules
         uses: actions/checkout@v4
