@@ -1,0 +1,86 @@
+name: Release build Windows
+run-name: Building Windows release version
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version'
+        type: string
+        default: '1.0'
+
+run-name: 'Build Pomodachi Windows: v${{ inputs.version }}'
+
+env:
+  GODOT_VERSION: 4.6
+  GODOT_PROJECT_LOCATION: src/project.godot
+  EXPORT_FOLDER: bin/Windows
+  APPLICATION_NAME: Pomodachi
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - name: Setting extra variables
+        run: |
+          echo "DATE=$(Get-Date -Format 'yyyy-MM-dd')" >> $env:GITHUB_ENV
+          echo "MAIN_FOLDER=$(pwd)" >> $env:GITHUB_ENV
+          echo "NUM_CORES=$env:NUMBER_OF_PROCESSORS" >> $env:GITHUB_ENV
+
+      - name: Installing dependencies
+        run: |
+          choco install python scons -y
+
+      - name: Checkout submodules
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Checkout Godot Engine
+        uses: actions/checkout@v4
+        with:
+          repository: godotengine/godot
+          ref: ${{ env.GODOT_VERSION }}-stable
+          path: godot
+
+      - name: Setup MSVC
+        uses: microsoft/setup-msbuild@v2
+
+      - name: Setup MSVC environment
+        uses: ilammy/msvc-dev-cmd@v1
+
+      - name: Compile Godot template
+        run: |
+          cd godot
+          scons platform=windows target=template_release arch=x86_64 production=yes build_profile=build_profile.gdbuild -j${{ env.NUM_CORES }}
+
+      - name: Prepare Godot editor
+        run: |
+          Invoke-WebRequest -Uri "https://github.com/godotengine/godot-builds/releases/download/${{ env.GODOT_VERSION }}-stable/Godot_v${{ env.GODOT_VERSION }}-stable_win64.exe.zip" -OutFile godot_windows.zip
+          Expand-Archive -Path godot_windows.zip -DestinationPath .
+
+      - name: Prepare Godot templates
+        run: |
+          New-Item -ItemType Directory -Force -Path "$env:APPDATA\Godot\export_templates\${{ env.GODOT_VERSION }}.stable"
+          Invoke-WebRequest -Uri "https://github.com/godotengine/godot-builds/releases/download/${{ env.GODOT_VERSION }}-stable/Godot_v${{ env.GODOT_VERSION }}-stable_export_templates.tpz" -OutFile godot_export_templates.tpz
+          Expand-Archive -Path godot_export_templates.tpz -DestinationPath "$env:APPDATA\Godot\export_templates\${{ env.GODOT_VERSION }}.stable"
+          Move-Item -Path "$env:APPDATA\Godot\export_templates\${{ env.GODOT_VERSION }}.stable\templates\*" -Destination "$env:APPDATA\Godot\export_templates\${{ env.GODOT_VERSION }}.stable\" -Force
+          Copy-Item -Path "godot\bin\godot.windows.template_release.x86_64.exe" -Destination "$env:APPDATA\Godot\export_templates\${{ env.GODOT_VERSION }}.stable\windows_release_x86_64.exe"
+
+      - name: Update version in config
+        run: |
+          (Get-Content ${{ env.GODOT_PROJECT_LOCATION }}) -replace 'config/version="[^"]*"', 'config/version="${{ env.DATE }}-release"' | Set-Content ${{ env.GODOT_PROJECT_LOCATION }}
+
+      - name: Import resources
+        run: |
+          New-Item -ItemType Directory -Force -Path ${{ env.EXPORT_FOLDER }}
+          .\Godot_v${{ env.GODOT_VERSION }}-stable_win64.exe --import ${{ env.GODOT_PROJECT_LOCATION }} --quiet --headless
+
+      - name: Building release
+        run: |
+          .\Godot_v${{ env.GODOT_VERSION }}-stable_win64.exe --import ${{ env.GODOT_PROJECT_LOCATION }} --quiet --headless --export-release Windows ${{ env.MAIN_FOLDER }}\${{ env.EXPORT_FOLDER }}\${{ env.APPLICATION_NAME }}.exe
+
+      - name: Uploading release
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.APPLICATION_NAME }}_windows_release_${{ env.DATE }}.zip
+          path: ${{ env.MAIN_FOLDER }}\${{ env.EXPORT_FOLDER }}\${{ env.APPLICATION_NAME }}.exe

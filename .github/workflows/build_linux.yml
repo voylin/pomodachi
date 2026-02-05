@@ -1,0 +1,87 @@
+name: Release build Linux
+run-name: Building Linux release version
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version'
+        type: string
+        default: '1.0'
+
+run-name: 'Build Pomodachi Linux: v${{ inputs.version }}'
+
+env:
+  GODOT_VERSION: 4.6
+  GODOT_PROJECT_LOCATION: src/project.godot
+  EXPORT_FOLDER: bin/Linux
+  APPLICATION_NAME: Pomodachi
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setting extra variables
+        run: |
+          echo "DATE=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
+          echo "MAIN_FOLDER=$(pwd)" >> $GITHUB_ENV
+          echo "NUM_CORES=$(nproc)" >> $GITHUB_ENV
+
+      - name: Installing dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential scons pkg-config libx11-dev libxcursor-dev \
+          libxinerama-dev libgl1-mesa-dev libglu-dev libasound2-dev libpulse-dev libudev-dev \
+          libxi-dev libxrandr-dev yasm libfontconfig
+
+      - name: Checkout submodules
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Checkout Godot Engine
+        uses: actions/checkout@v4
+        with:
+          repository: godotengine/godot
+          ref: ${{ env.GODOT_VERSION }}-stable
+          path: godot
+
+      - name: Compile Godot template
+        run: |
+          cd godot
+          scons platform=linuxbsd target=template_release arch=x86_64 production=yes build_profile=build_profile.gdbuild -j${{ env.NUM_CORES }}
+
+      - name: Prepare Godot editor
+        run: |
+          wget -q -O godot_linux.zip https://github.com/godotengine/godot-builds/releases/download/${{ env.GODOT_VERSION }}-stable/Godot_v${{ env.GODOT_VERSION }}-stable_linux.x86_64.zip
+          unzip godot_linux.zip
+
+      - name: Prepare Godot templates
+        run: |
+          mkdir -p ~/.local/share/godot/export_templates/${{ env.GODOT_VERSION }}.stable
+          wget -q -O godot_export_templates.tpz https://github.com/godotengine/godot-builds/releases/download/${{ env.GODOT_VERSION }}-stable/Godot_v${{ env.GODOT_VERSION }}-stable_export_templates.tpz
+          unzip godot_export_templates.tpz -d ~/.local/share/godot/export_templates/${{ env.GODOT_VERSION }}.stable
+          mv ~/.local/share/godot/export_templates/${{ env.GODOT_VERSION }}.stable/templates/* ~/.local/share/godot/export_templates/${{ env.GODOT_VERSION }}.stable/
+
+          cp godot/bin/godot.linuxbsd.template_release.x86_64 ~/.local/share/godot/export_templates/${{ env.GODOT_VERSION }}.stable/linux_release.x86_64
+
+      - name: Update version in config
+          sed -i 's/config\/version="[^"]*"/config\/version="${{ env.DATE }}-release"/' ${{ env.GODOT_PROJECT_LOCATION }}
+
+      - name: Import resources
+        run: |
+          mkdir -p ${{ env.EXPORT_FOLDER }}
+          ./Godot_v${{ env.GODOT_VERSION }}-stable_linux.x86_64 --import ${{ env.GODOT_PROJECT_LOCATION }} --quiet --headless
+
+      - name: Building release
+        run: |
+          ./Godot_v${{ env.GODOT_VERSION }}-stable_linux.x86_64 --import ${{ env.GODOT_PROJECT_LOCATION }} --quiet --headless --export-release Linux ${{ env.MAIN_FOLDER }}/${{ env.EXPORT_FOLDER }}/${{ env.APPLICATION_NAME }}.x86_64
+          chmod +x ${{ env.EXPORT_FOLDER }}/${{ env.APPLICATION_NAME }}.x86_64
+
+      - name: Tar files
+        run: tar -cvf ${{ env.APPLICATION_NAME }}_linux_release_${{ env.DATE }}.tar ${{ env.EXPORT_FOLDER }}
+
+      - name: Uploading release
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.APPLICATION_NAME }}_linux_release_${{ env.DATE }}.tar
+          path: ${{ env.APPLICATION_NAME }}_linux_release_${{ env.DATE }}.tar
