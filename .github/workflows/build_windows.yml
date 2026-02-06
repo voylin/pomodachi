@@ -11,8 +11,8 @@ run-name: 'Build Pomodachi Windows: v${{ inputs.version }}'
 
 env:
   GODOT_VERSION: 4.6
-  GODOT_PROJECT_LOCATION: src/project.godot
-  EXPORT_FOLDER: bin/Windows
+  GODOT_PROJECT_LOCATION: src\project.godot
+  EXPORT_FOLDER: bin\Windows
   APPLICATION_NAME: Pomodachi
 
 jobs:
