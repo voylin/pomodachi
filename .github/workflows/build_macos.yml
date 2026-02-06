@@ -67,7 +67,7 @@ jobs:
 
       - name: Update version in config
         run: |
-          sed -i '' 's/config\/version="[^"]*"/config\/version="${{ env.DATE }}-release"/' ${{ env.GODOT_PROJECT_LOCATION }}
+          sed -i '' 's/config\/version="[^"]*"/config\/version="v${{ inputs.version }}"/' ${{ env.GODOT_PROJECT_LOCATION }}
 
       - name: Import resources
         run: |
@@ -81,5 +81,5 @@ jobs:
       - name: Uploading release
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ env.APPLICATION_NAME }}_macos_release_${{ env.DATE }}.zip
+          name: ${{ env.APPLICATION_NAME }}_macos_release_v${{ inputs.version }}.zip
           path: ${{ env.MAIN_FOLDER }}/${{ env.EXPORT_FOLDER }}/${{ env.APPLICATION_NAME }}.app

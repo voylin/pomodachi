@@ -5,10 +5,14 @@ _A pomodoro timer made with Godot._
 
 Pomodachi is in alpha right now, it'll get more features as time goes on, there's a roadmap, but for the first few stages I want to focus on usability first.
 
+## Download
+You can download it through the AUR: https://aur.archlinux.org/packages/pomodachi-bin
+or through the builds in the release tab: https://github.com/voylin/pomodachi/releases
+
 ## Road-map
 - [x] Simple timer functionality;
 - [x] Create icon;
-- [ ] Add AUR install;
+- [x] Add AUR install;
 - [x] Have preset times (change-able);
 - [x] Saving settings;
 - [x] Tracking of what you've been working on (activities);

@@ -21,7 +21,6 @@ jobs:
     steps:
       - name: Setting extra variables
         run: |
-          echo "DATE=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
           echo "MAIN_FOLDER=$(pwd)" >> $GITHUB_ENV
           echo "NUM_CORES=$(nproc)" >> $GITHUB_ENV
 
@@ -64,7 +63,7 @@ jobs:
           cp godot/bin/godot.linuxbsd.template_release.x86_64 ~/.local/share/godot/export_templates/${{ env.GODOT_VERSION }}.stable/linux_release.x86_64
 
       - name: Update version in config
-        run: sed -i 's/config\/version="[^"]*"/config\/version="${{ env.DATE }}-release"/' ${{ env.GODOT_PROJECT_LOCATION }}
+        run: sed -i 's/config\/version="[^"]*"/config\/version="v${{ inputs.version }}"/' ${{ env.GODOT_PROJECT_LOCATION }}
 
       - name: Import resources
         run: |
@@ -77,10 +76,10 @@ jobs:
           chmod +x ${{ env.EXPORT_FOLDER }}/${{ env.APPLICATION_NAME }}.x86_64
 
       - name: Tar files
-        run: tar -cvf ${{ env.APPLICATION_NAME }}_linux_release_${{ env.DATE }}.tar ${{ env.EXPORT_FOLDER }}
+        run: tar -cvf ${{ env.APPLICATION_NAME }}_linux_release_v${{ inputs.version }}.tar ${{ env.EXPORT_FOLDER }}
 
       - name: Uploading release
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ env.APPLICATION_NAME }}_linux_release_${{ env.DATE }}.tar
-          path: ${{ env.APPLICATION_NAME }}_linux_release_${{ env.DATE }}.tar
+          name: ${{ env.APPLICATION_NAME }}_linux_release_v${{ inputs.version }}.tar
+          path: ${{ env.APPLICATION_NAME }}_linux_release_v${{ inputs.version }}.tar
