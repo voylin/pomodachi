@@ -31,3 +31,7 @@ or through the builds in the release tab: https://github.com/voylin/pomodachi/re
 
 ## Pomodoro?
 The Pomodoro Technique is a time-management method using a timer to break work into 25-minute, high-focus intervals called "pomodoros," separated by 5-minute short breaks.
+
+## Support this project
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/R6R4M1UM6)
+[Patreon page](https://patreon.com/voylin)
